@@ -1,0 +1,58 @@
+{
+  "name": "ui-complex",
+  "version": "1.0.110",
+  "type": "module",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "/dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --p ./tsconfig-build.json && vite build",
+    "prepare": "npm run build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "ui-complex",
+    "ui",
+    "library",
+    "component",
+    "components",
+    "universal",
+    "global",
+    "dashboard",
+    "timeline",
+    "time-line",
+    "schedule"
+  ],
+  "author": "Murodillo Cho'liyev",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/react": "^18.2.47",
+    "dayjs": "^1.10.7",
+    "react": "^18.2.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@types/react-dom": "^18.2.18",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "path": "^0.12.7",
+    "react-dom": "^18.2.0",
+    "sass": "^1.69.7",
+    "vite": "^5.0.11",
+    "vite-plugin-dts": "^3.7.1",
+    "vite-plugin-lib-inject-css": "^1.3.0"
+  }
+}

@@ -1,0 +1,25 @@
+.uic {
+    &-dropdown {
+        position: absolute;
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s;
+        animation: uic-dropdown 0.3s;
+
+        @keyframes uic-dropdown {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        &-open {
+            opacity: 1;
+            pointer-events: inherit;
+        }
+    }
+}

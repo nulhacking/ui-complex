@@ -1,0 +1,39 @@
+.uic {
+    &-timeline {
+        &-header {
+            border-bottom: 1px solid #EEE;
+            height: 40px;
+            background: white;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            &-item {
+                display: flex;
+                gap: 24px;
+            }
+
+            &-today {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+
+                >span {
+                    cursor: pointer;
+                }
+
+                &-icon {
+                    padding: 4px;
+                    cursor: pointer;
+                }
+            }
+
+            &-dateFormat {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+        }
+    }
+}
