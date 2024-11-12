@@ -24,7 +24,7 @@
             background: #ccc;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: auto;
             position: relative;
 
             * {
