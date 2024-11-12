@@ -16,6 +16,7 @@ export namespace ITimelineContext {
     dateType: DateType;
     dayWidthSize: Record<DateType, number>;
     header?: ITimelineContext.IHeader;
+    dependencies: boolean;
   }
   export interface IHeader {
     extra: () => ReactNode;
@@ -46,6 +47,7 @@ export const timelineDefaultState: TimelineContextData = {
   dateFormatTodates: dateTypeToDate(),
   setDateType: () => {},
   setDayWidthSize: () => {},
+  dependencies: false,
 };
 
 export const TimelineContext =

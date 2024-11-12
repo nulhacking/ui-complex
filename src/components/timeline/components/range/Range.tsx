@@ -12,6 +12,8 @@ import RangeDraggable from "./utils/hooks/RangeDraggable";
 import { getTimelineScroll } from "../../utils/helpers/timelineOnScroll";
 import { IRange } from "../../utils/models/IRange";
 import RangeView from "./utils/hooks/RangeView";
+import Waiting from "./Waiting";
+import Blocking from "./Blocking";
 dayjs.extend(customParseFormat);
 
 interface IProps extends ITimelineDataChildren {
@@ -20,6 +22,7 @@ interface IProps extends ITimelineDataChildren {
   customeStyle?: boolean;
   onDragEnd?: (range: IRange) => void;
   disabled?: boolean;
+  blocking?: string[];
 }
 
 const Range = ({
@@ -28,10 +31,12 @@ const Range = ({
   children,
   customeStyle = false,
   disabled = false,
+  blocking,
   ...props
 }: IProps) => {
-  const { dateFormatTodates, holderWidth, contentRef, randomId, bodyRef } =
+  const { dateFormatTodates, holderWidth, contentRef, randomId, dependencies } =
     useContext(TimelineContext);
+
   const { dayWidth } = dateFormatTodates;
   const [position, setPosition] = useState(PositionStateDefault);
   const [visible, setVisible] = useState(false);
@@ -171,14 +176,18 @@ const Range = ({
               gridColumnEnd: dueDate + 1,
               opacity: isDrag ? 0.5 : 1,
             }}
+            task-id={holder?.id}
             ref={rangeRef}
             {...(!disabled && { onMouseDown })}
           >
             {!disabled && (
-              <div
-                className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-left`}
-                onMouseDown={onMouseDownLeft}
-              ></div>
+              <>
+                <div
+                  className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-left`}
+                  onMouseDown={onMouseDownLeft}
+                ></div>
+                <Waiting />
+              </>
             )}
 
             <div
@@ -192,10 +201,13 @@ const Range = ({
               {children}
             </div>
             {!disabled && (
-              <div
-                className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-right`}
-                onMouseDown={onMouseDownRight}
-              ></div>
+              <>
+                <div
+                  className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-right`}
+                  onMouseDown={onMouseDownRight}
+                ></div>
+                <Blocking ids={blocking || []} taskId={holder?.id} />
+              </>
             )}
           </div>
           {isDrag && (

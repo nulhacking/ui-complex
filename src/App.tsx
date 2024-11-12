@@ -16,11 +16,18 @@ const dataDefault = Array.from({ length: 10 }).map((_, i) => ({
       id: `${i} 2`,
       startDate: "23.09.2024",
       dueDate: "23.09.2024",
+      blocking: i === 2 ? ["0 4"] : [],
     },
     {
       id: `${i} 3`,
       startDate: "23.09.2024",
       dueDate: "24.09.2024",
+    },
+    {
+      id: `${i} 4`,
+      startDate: "24.09.2024",
+      dueDate: "25.09.2024",
+      blocking: i === 0 ? ["2 2"] : [],
     },
   ],
 }));
@@ -71,7 +78,8 @@ const App = () => {
         onResize={({ size }) => {
           localStorage.setItem("size", JSON.stringify(size));
         }}
-        startDate={dayjs("2024-09-23")}
+        startDate={dayjs("2024-09-18")}
+        dependencies
       >
         <>
           {dataDefault?.map((item) => (
@@ -86,8 +94,9 @@ const App = () => {
                     {...holder}
                     key={holder?.id}
                     holder={{ id: holder?.id }}
+                    blocking={holder?.blocking}
                   >
-                    <div>sdfsfsd</div>
+                    <div>{holder?.id}</div>
                   </Holder.Range>
                 ))}
               </>

@@ -182,8 +182,20 @@
                 justify-content: flex-end;
 
                 &:hover {
+                    z-index: 2;
                     .uic-timeline-body-range-resize {
                         opacity: 1;
+                    }
+                    .uic-timeline-body-range-waiting{
+                        right: calc(100% - 10px);
+                    }
+                    .uic-timeline-body-range-blocking{
+                        left:  calc(100% - 10px);
+                    }
+                    .uic-timeline-body-range-waiting,
+                    .uic-timeline-body-range-blocking {
+                        opacity: 1;
+                        pointer-events: inherit;
                     }
                 }
 
@@ -231,6 +243,55 @@
                         width: 100%;
                         position: relative;
                         overflow: hidden;
+                    }
+                }
+
+                &-waiting,&-blocking{
+                    pointer-events: none;
+                    opacity: 0;
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    background: #8192B2;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    font-weight: 600;
+                    cursor: pointer;
+                    z-index: 1;
+                    transition: 0.3s;
+                }
+
+                &-waiting{
+                    right: calc(100% - 32px);
+                }
+                &-blocking{
+                    left: calc(100% - 32px);
+                }
+                &-line{
+                    position: absolute;
+                    width: 100px;
+                    height: 1px;
+                    background: #1e90ff;
+                    right: 6px;
+                    top: 50%;
+                    transform: rotate(250deg);
+                    transform-origin: 100% 100%;
+                    z-index: 1;
+                    &-svg{
+                        position: absolute;
+                        pointer-events: none;
+                        z-index: 1;
+                        right: -20px;
+                        top: 0;
+                        path{
+                            stroke: red;
+                            stroke-width: 2;
+                            fill: none;
+                        }
                     }
                 }
 
