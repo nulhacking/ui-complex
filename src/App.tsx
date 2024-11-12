@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import { Timeline } from "./components/timeline";
 const { Holder, OutsideDraggable } = Timeline;
 import "./global.scss";
@@ -70,6 +71,7 @@ const App = () => {
         onResize={({ size }) => {
           localStorage.setItem("size", JSON.stringify(size));
         }}
+        startDate={dayjs("2024-09-23")}
       >
         <>
           {dataDefault?.map((item) => (

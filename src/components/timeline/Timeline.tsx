@@ -25,6 +25,7 @@ interface IProps {
   header?: ITimelineContext.IHeader;
   size?: Partial<Record<DateType, number>>;
   onResize?: (props: { size: Partial<Record<DateType, number>> }) => void;
+  startDate?: dayjs.Dayjs;
 }
 
 const Timeline: {
@@ -35,6 +36,7 @@ const Timeline: {
   onDragEnd,
   children,
   holderWidth = 205,
+  startDate = dayjs(),
   header,
   size = timelineDefaultState.dayWidthSize,
   onResize,
@@ -49,7 +51,7 @@ const Timeline: {
     ...size,
   });
   const [startTimeline, setStartTimeline] = useState({
-    date: dayjs(),
+    date: startDate,
     startCount: 2,
     endCount: 2,
   });
