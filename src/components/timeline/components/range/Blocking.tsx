@@ -54,7 +54,6 @@ const Blocking = ({ ids, taskId, fromRef }: IProps) => {
 
       const fromPosition = fromTask?.getBoundingClientRect();
       const fromLeft = fromStart || 0;
-      const fromRight = fromPosition?.right;
 
       let maxLeft = fromStart;
       let maxRight = fromEnd;
@@ -66,60 +65,66 @@ const Blocking = ({ ids, taskId, fromRef }: IProps) => {
       let paths: string[] = [];
 
       ids?.forEach((id) => {
-        const toTask = contentRef?.querySelector(
+        const taks = contentRef?.querySelectorAll<HTMLDivElement>(
           `[task-id='${id}']`
-        ) as HTMLDivElement;
+        );
 
-        if (toTask) {
-          const toPosition = toTask?.getBoundingClientRect();
+        taks?.forEach((toTask) => {
+          if (toTask) {
+            const toPosition = toTask?.getBoundingClientRect();
 
-          const toStart = Number(toTask.style.gridColumnStart) * dayWidth + 20;
-          const toEnd = Number(toTask.style.gridColumnEnd) * dayWidth + 20;
+            const toStart =
+              Number(toTask.style.gridColumnStart) * dayWidth + 20;
+            const toEnd = Number(toTask.style.gridColumnEnd) * dayWidth + 20;
 
-          if (toStart < maxLeft) {
-            maxLeft = toStart;
-          }
-          if (toEnd > maxRight) {
-            right = toEnd - fromEnd + 20;
-            maxRight = toEnd;
-          }
+            if (toStart < maxLeft) {
+              maxLeft = toStart;
+            }
+            if (toEnd > maxRight) {
+              right = toEnd - fromEnd + 20;
+              maxRight = toEnd;
+            }
 
-          if (toPosition?.top! + containerTop() < maxTop) {
-            maxTop = toPosition?.top! - containerTop();
-            top =
-              fromPosition?.top! +
-              containerTop() -
-              toPosition?.top! +
-              containerTop();
+            if (toPosition?.top! + containerTop() < maxTop) {
+              maxTop = toPosition?.top! - containerTop();
+              top =
+                fromPosition?.top! +
+                containerTop() -
+                toPosition?.top! +
+                containerTop();
+            }
+            if (toPosition?.bottom! + containerTop() > maxBottom) {
+              maxBottom = toPosition?.bottom! + containerTop();
+            }
           }
-          if (toPosition?.bottom! + containerTop() > maxBottom) {
-            maxBottom = toPosition?.bottom! + containerTop();
-          }
-        }
+        });
       });
 
       ids?.forEach((id) => {
-        const toTask = contentRef?.querySelector(
+        const taks = contentRef?.querySelectorAll<HTMLDivElement>(
           `[task-id='${id}']`
-        ) as HTMLDivElement;
+        );
 
-        if (toTask) {
-          const toPosition = toTask?.getBoundingClientRect();
-          const toStart = Number(toTask.style.gridColumnStart) * dayWidth + 20;
-          const startX =
-            (fromStart > toStart ? fromLeft - toStart : 0) +
-            (fromEnd - fromStart) +
-            40;
-          const startY = fromPosition?.top! + containerTop() - maxTop + 20;
-          const endX = toStart - maxLeft + 20;
-          const endY = toPosition?.top! + containerTop() - maxTop + 20;
-          const controlOffset = 100;
-          const d = `M ${startX} ${startY} C ${
-            startX + controlOffset
-          } ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;
+        taks?.forEach((toTask) => {
+          if (toTask) {
+            const toPosition = toTask?.getBoundingClientRect();
+            const toStart =
+              Number(toTask.style.gridColumnStart) * dayWidth + 20;
+            const startX =
+              (fromStart > toStart ? fromLeft - toStart : 0) +
+              (fromEnd - fromStart) +
+              40;
+            const startY = fromPosition?.top! + containerTop() - maxTop + 20;
+            const endX = toStart - maxLeft + 20;
+            const endY = toPosition?.top! + containerTop() - maxTop + 20;
+            const controlOffset = 100;
+            const d = `M ${startX} ${startY} C ${
+              startX + controlOffset
+            } ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;
 
-          paths.push(d);
-        }
+            paths.push(d);
+          }
+        });
       });
 
       setSvgPosition({
