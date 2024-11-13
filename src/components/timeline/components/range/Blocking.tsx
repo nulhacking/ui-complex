@@ -6,9 +6,10 @@ import { TimelineContext } from "../../hooks/TimelineContext";
 interface IProps {
   ids: string[];
   taskId: string;
+  fromRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
-const Blocking = ({ ids, taskId }: IProps) => {
+const Blocking = ({ ids, taskId, fromRef }: IProps) => {
   const [svgPosition, setSvgPosition] = useState({
     width: 0,
     height: 0,
@@ -41,7 +42,7 @@ const Blocking = ({ ids, taskId }: IProps) => {
 
   const setSvgLines = (ids: string[]) => {
     if (ids.length > 0) {
-      const fromTask = document.querySelector(`[task-id='${taskId}']`);
+      const fromTask = fromRef?.current;
 
       const fromStart =
         Number(

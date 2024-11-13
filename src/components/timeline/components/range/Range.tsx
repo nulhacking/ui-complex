@@ -224,7 +224,11 @@ const Range = ({
                   className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-right`}
                   onMouseDown={onMouseDownRight}
                 ></div>
-                <Blocking ids={blockings || []} taskId={props?.id} />
+                <Blocking
+                  ids={blockings || []}
+                  taskId={props?.id}
+                  fromRef={rangeRef}
+                />
               </>
             )}
           </div>
