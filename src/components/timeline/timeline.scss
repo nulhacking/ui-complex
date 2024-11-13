@@ -196,6 +196,7 @@
                     .uic-timeline-body-range-blocking {
                         opacity: 1;
                         pointer-events: inherit;
+                        z-index: 4;
                     }
                 }
 
@@ -261,7 +262,7 @@
                     align-items: center;
                     font-weight: 600;
                     cursor: pointer;
-                    z-index: 1;
+                    z-index: 2;
                     transition: 0.3s;
                 }
 
@@ -276,11 +277,23 @@
                     width: 100px;
                     height: 1px;
                     background: #1e90ff;
-                    right: 6px;
+                    right: 0;
                     top: 50%;
                     transform: rotate(250deg);
                     transform-origin: 100% 100%;
-                    z-index: 1;
+                    z-index: 3;
+                    pointer-events: none;
+                    &-waiting{
+                        position: absolute;
+                        width: 100px;
+                        height: 1px;
+                        background: #1e90ff;
+                        top: 50%;
+                        transform: rotate(250deg);
+                        transform-origin: 100% 100%;
+                        z-index: 3;
+                        right: 100%;
+                    }
                     &-svg{
                         position: absolute;
                         pointer-events: none;

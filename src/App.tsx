@@ -16,7 +16,8 @@ const dataDefault = Array.from({ length: 10 }).map((_, i) => ({
       id: `${i} 2`,
       startDate: "23.09.2024",
       dueDate: "23.09.2024",
-      blocking: i === 2 ? ["0 4"] : [],
+      // blockings: i === 2 ? ["0 4"] : [],
+      waitings: i === 2 ? ["0 4"] : [],
     },
     {
       id: `${i} 3`,
@@ -27,7 +28,8 @@ const dataDefault = Array.from({ length: 10 }).map((_, i) => ({
       id: `${i} 4`,
       startDate: "24.09.2024",
       dueDate: "25.09.2024",
-      blocking: i === 0 ? ["2 2"] : [],
+      blockings: i === 0 ? ["2 2"] : [],
+      // waitings: i === 0 ? ["2 2"] : [],
     },
   ],
 }));
@@ -69,7 +71,7 @@ const App = () => {
           <div>sdfsdfsd</div>
         </OutsideDraggable>
       </div> */}
-
+      {/* sdfsdfds */}
       <Timeline
         header={{
           extra: () => "sdfsfsdf",
@@ -94,7 +96,11 @@ const App = () => {
                     {...holder}
                     key={holder?.id}
                     holder={{ id: holder?.id }}
-                    blocking={holder?.blocking}
+                    blockings={holder?.blockings}
+                    waitings={holder?.waitings}
+                    onDependenceEnd={(value) => {
+                      console.log(value);
+                    }}
                   >
                     <div>{holder?.id}</div>
                   </Holder.Range>

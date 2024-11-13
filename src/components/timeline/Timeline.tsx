@@ -44,7 +44,8 @@ const Timeline: {
   onResize,
 }) => {
   const [randomId, _] = useState(timelineDefaultState.randomId);
-  const [timelineRef, setTimelineRef] = useState<HTMLDivElement | null>(null);
+  const [timelineRef, setTimelineRef] =
+    useState<ITimelineContext.IState["contentRef"]>(null);
   const [timelineBodyRef, setTimelineBodyRef] = useState<HTMLDivElement | null>(
     null
   );
@@ -98,7 +99,7 @@ const Timeline: {
       >
         <div
           className="uic-timeline"
-          ref={(ref) => setTimelineRef(ref)}
+          ref={(ref) => setTimelineRef(ref as any)}
           id={randomId}
           day-width={dateFormatTodates.dayWidth}
           holder-width={holderWidth}

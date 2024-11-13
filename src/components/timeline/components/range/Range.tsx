@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { TimelineContext } from "../../hooks/TimelineContext";
+import { ITimelineContext, TimelineContext } from "../../hooks/TimelineContext";
 import {
   ITimelineData,
   ITimelineDataChildren,
@@ -21,17 +21,21 @@ interface IProps extends ITimelineDataChildren {
   children: JSX.Element | React.ReactNode | string;
   customeStyle?: boolean;
   onDragEnd?: (range: IRange) => void;
+  onDependenceEnd?: (dependence: ITimelineContext.Dependence) => void;
   disabled?: boolean;
-  blocking?: string[];
+  blockings?: string[];
+  waitings?: string[];
 }
 
 const Range = ({
   onDragEnd,
+  onDependenceEnd,
   holder,
   children,
   customeStyle = false,
   disabled = false,
-  blocking,
+  blockings,
+  waitings,
   ...props
 }: IProps) => {
   const { dateFormatTodates, holderWidth, contentRef, randomId, dependencies } =
@@ -177,6 +181,18 @@ const Range = ({
               opacity: isDrag ? 0.5 : 1,
             }}
             task-id={holder?.id}
+            onMouseUp={() => {
+              if (
+                contentRef &&
+                contentRef.dependence?.isLine &&
+                onDependenceEnd
+              ) {
+                onDependenceEnd({
+                  ...contentRef.dependence,
+                  toId: holder?.id,
+                });
+              }
+            }}
             ref={rangeRef}
             {...(!disabled && { onMouseDown })}
           >
@@ -186,7 +202,7 @@ const Range = ({
                   className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-left`}
                   onMouseDown={onMouseDownLeft}
                 ></div>
-                <Waiting />
+                <Waiting ids={waitings || []} taskId={holder?.id} />
               </>
             )}
 
@@ -206,7 +222,7 @@ const Range = ({
                   className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-right`}
                   onMouseDown={onMouseDownRight}
                 ></div>
-                <Blocking ids={blocking || []} taskId={holder?.id} />
+                <Blocking ids={blockings || []} taskId={holder?.id} />
               </>
             )}
           </div>

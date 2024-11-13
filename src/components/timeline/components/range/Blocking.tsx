@@ -100,40 +100,36 @@ const Blocking = ({ ids, taskId }: IProps) => {
       let paths: string[] = [];
 
       ids?.forEach((id) => {
-        const toTask = document.querySelector(`[task-id='${id}']`);
-        const toPosition = toTask?.getBoundingClientRect();
-
-        const toStart =
-          Number(toTask!["style" as keyof typeof toTask]["grid-column-start"]) *
-            dayWidth +
-          20;
-        const toEnd =
-          Number(toTask!["style" as keyof typeof toTask]["grid-column-end"]) *
-            dayWidth +
-          20;
-
-        if (toStart < maxLeft) {
-          maxLeft = toStart;
-        }
-        if (toEnd > maxRight) {
-          right = toEnd - fromEnd + 20;
-          maxRight = toEnd;
-        }
-
-        // console.log(toPosition, fromPosition, fromTask, toTask);
-        if (toPosition?.top! + containerTop() < maxTop) {
-          maxTop = toPosition?.top! + containerTop();
-          top =
-            fromPosition?.top! +
-            containerTop() -
-            toPosition?.top! +
-            containerTop();
-        }
-        if (toPosition?.bottom! + containerTop() > maxBottom) {
-          maxBottom = toPosition?.bottom! + containerTop();
-        }
+        const toTask = document.querySelector(
+          `[task-id='${id}']`
+        ) as HTMLDivElement;
 
         if (toTask) {
+          const toPosition = toTask?.getBoundingClientRect();
+
+          const toStart = Number(toTask.style.gridColumnStart) * dayWidth + 20;
+          const toEnd = Number(toTask.style.gridColumnEnd) * dayWidth + 20;
+
+          if (toStart < maxLeft) {
+            maxLeft = toStart;
+          }
+          if (toEnd > maxRight) {
+            right = toEnd - fromEnd + 20;
+            maxRight = toEnd;
+          }
+
+          // console.log(toPosition, fromPosition, fromTask, toTask);
+          if (toPosition?.top! + containerTop() < maxTop) {
+            maxTop = toPosition?.top! - containerTop();
+            top =
+              fromPosition?.top! +
+              containerTop() -
+              toPosition?.top! +
+              containerTop();
+          }
+          if (toPosition?.bottom! + containerTop() > maxBottom) {
+            maxBottom = toPosition?.bottom! + containerTop();
+          }
           const startX =
             (fromStart > toStart ? fromLeft - toStart : 0) +
             (fromEnd - fromStart) +
@@ -163,6 +159,14 @@ const Blocking = ({ ids, taskId }: IProps) => {
         right,
         paths,
         top,
+      });
+    } else {
+      setSvgPosition({
+        width: 0,
+        height: 0,
+        right: 0,
+        top: 0,
+        paths: [],
       });
     }
   }, [svgRef.current, ids]);
@@ -202,10 +206,18 @@ const Blocking = ({ ids, taskId }: IProps) => {
             x: 0,
             y: 0,
           });
+          if (contentRef) {
+            contentRef["dependence"] = {
+              fromId: taskId,
+              type: "blocking",
+              isLine: true,
+            };
+          }
         }}
         style={{
-          opacity: ids?.length > 0 ? 1 : "",
-          left: ids?.length > 0 ? "calc(100% - 16px)" : "",
+          opacity: ids?.length > 0 || linePosition?.isLine ? 1 : "",
+          left:
+            ids?.length > 0 || linePosition?.isLine ? "calc(100% - 10px)" : "",
         }}
       >
         <LinkIcon />

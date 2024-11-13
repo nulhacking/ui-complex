@@ -7,8 +7,14 @@ import { DateType } from "../utils/enums/dateType";
 import { IRange } from "../utils/models/IRange";
 
 export namespace ITimelineContext {
+  export interface Dependence {
+    type: "blocking" | "waiting";
+    fromId?: string;
+    toId?: string;
+    isLine?: boolean;
+  }
   export interface IState {
-    contentRef: HTMLDivElement | null;
+    contentRef: (HTMLDivElement & { dependence: Dependence }) | null;
     bodyRef: HTMLDivElement | null;
     randomId: string;
     dateFormatTodates: DateFormatToDate;
