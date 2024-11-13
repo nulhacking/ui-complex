@@ -39,6 +39,106 @@ const Blocking = ({ ids, taskId }: IProps) => {
     -(contentRef?.getBoundingClientRect()?.left || 0) +
     getTimelineScroll(randomId).x;
 
+  const setSvgLines = (ids: string[]) => {
+    if (ids.length > 0) {
+      const fromTask = document.querySelector(`[task-id='${taskId}']`);
+
+      const fromStart =
+        Number(
+          fromTask!["style" as keyof typeof fromTask]["grid-column-start"]
+        ) * dayWidth;
+      const fromEnd =
+        Number(fromTask!["style" as keyof typeof fromTask]["grid-column-end"]) *
+        dayWidth;
+
+      const fromPosition = fromTask?.getBoundingClientRect();
+      const fromLeft = fromStart || 0;
+      const fromRight = fromPosition?.right;
+
+      let maxLeft = fromStart;
+      let maxRight = fromEnd;
+      let maxTop = fromPosition?.top! + containerTop();
+      let maxBottom = fromPosition?.bottom! + containerTop();
+      let right = 20;
+      let top = 0;
+
+      let paths: string[] = [];
+
+      ids?.forEach((id) => {
+        const toTask = contentRef?.querySelector(
+          `[task-id='${id}']`
+        ) as HTMLDivElement;
+
+        if (toTask) {
+          const toPosition = toTask?.getBoundingClientRect();
+
+          const toStart = Number(toTask.style.gridColumnStart) * dayWidth + 20;
+          const toEnd = Number(toTask.style.gridColumnEnd) * dayWidth + 20;
+
+          if (toStart < maxLeft) {
+            maxLeft = toStart;
+          }
+          if (toEnd > maxRight) {
+            right = toEnd - fromEnd + 20;
+            maxRight = toEnd;
+          }
+
+          if (toPosition?.top! + containerTop() < maxTop) {
+            maxTop = toPosition?.top! - containerTop();
+            top =
+              fromPosition?.top! +
+              containerTop() -
+              toPosition?.top! +
+              containerTop();
+          }
+          if (toPosition?.bottom! + containerTop() > maxBottom) {
+            maxBottom = toPosition?.bottom! + containerTop();
+          }
+        }
+      });
+
+      ids?.forEach((id) => {
+        const toTask = contentRef?.querySelector(
+          `[task-id='${id}']`
+        ) as HTMLDivElement;
+
+        if (toTask) {
+          const toPosition = toTask?.getBoundingClientRect();
+          const toStart = Number(toTask.style.gridColumnStart) * dayWidth + 20;
+          const startX =
+            (fromStart > toStart ? fromLeft - toStart : 0) +
+            (fromEnd - fromStart) +
+            40;
+          const startY = fromPosition?.top! + containerTop() - maxTop + 20;
+          const endX = toStart - maxLeft + 20;
+          const endY = toPosition?.top! + containerTop() - maxTop + 20;
+          const controlOffset = 100;
+          const d = `M ${startX} ${startY} C ${
+            startX + controlOffset
+          } ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;
+
+          paths.push(d);
+        }
+      });
+
+      setSvgPosition({
+        width: maxRight - maxLeft + 60,
+        height: maxBottom - maxTop,
+        right,
+        paths,
+        top,
+      });
+    } else {
+      setSvgPosition({
+        width: 0,
+        height: 0,
+        right: 0,
+        top: 0,
+        paths: [],
+      });
+    }
+  };
+
   useEffect(() => {
     const windowMouseMove = (e: MouseEvent) => {
       if (linePosition.isLine) {
@@ -76,99 +176,25 @@ const Blocking = ({ ids, taskId }: IProps) => {
   }, [linePosition.isLine]);
 
   useEffect(() => {
-    if (ids.length > 0) {
-      const fromTask = document.querySelector(`[task-id='${taskId}']`);
-      const fromStart =
-        Number(
-          fromTask!["style" as keyof typeof fromTask]["grid-column-start"]
-        ) * dayWidth;
-      const fromEnd =
-        Number(fromTask!["style" as keyof typeof fromTask]["grid-column-end"]) *
-        dayWidth;
+    const mutationObserve = new MutationObserver((elements) => {
+      setSvgLines(ids);
+    });
 
-      const fromPosition = fromTask?.getBoundingClientRect();
-      const fromLeft = fromStart || 0;
-      const fromRight = fromPosition?.right;
-
-      let maxLeft = fromStart;
-      let maxRight = fromEnd;
-      let maxTop = fromPosition?.top! + containerTop();
-      let maxBottom = fromPosition?.bottom! + containerTop();
-      let right = 20;
-      let top = 0;
-
-      let paths: string[] = [];
-
-      ids?.forEach((id) => {
-        const toTask = document.querySelector(
-          `[task-id='${id}']`
-        ) as HTMLDivElement;
-
-        if (toTask) {
-          const toPosition = toTask?.getBoundingClientRect();
-
-          const toStart = Number(toTask.style.gridColumnStart) * dayWidth + 20;
-          const toEnd = Number(toTask.style.gridColumnEnd) * dayWidth + 20;
-
-          if (toStart < maxLeft) {
-            maxLeft = toStart;
-          }
-          if (toEnd > maxRight) {
-            right = toEnd - fromEnd + 20;
-            maxRight = toEnd;
-          }
-
-          // console.log(toPosition, fromPosition, fromTask, toTask);
-          if (toPosition?.top! + containerTop() < maxTop) {
-            maxTop = toPosition?.top! - containerTop();
-            top =
-              fromPosition?.top! +
-              containerTop() -
-              toPosition?.top! +
-              containerTop();
-          }
-          if (toPosition?.bottom! + containerTop() > maxBottom) {
-            maxBottom = toPosition?.bottom! + containerTop();
-          }
-          const startX =
-            (fromStart > toStart ? fromLeft - toStart : 0) +
-            (fromEnd - fromStart) +
-            40;
-          const startY = fromPosition?.top! + containerTop() - maxTop + 20;
-
-          if (taskId === "0 2") {
-            console.log(maxLeft, toStart);
-          }
-
-          const endX = toStart - maxLeft + 20;
-
-          const endY = toPosition?.top! + containerTop() - maxTop + 20;
-
-          const controlOffset = 100;
-          const d = `M ${startX} ${startY} C ${
-            startX + controlOffset
-          } ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;
-
-          paths.push(d);
-        }
-      });
-
-      setSvgPosition({
-        width: maxRight - maxLeft + 60,
-        height: maxBottom - maxTop,
-        right,
-        paths,
-        top,
-      });
-    } else {
-      setSvgPosition({
-        width: 0,
-        height: 0,
-        right: 0,
-        top: 0,
-        paths: [],
+    if (contentRef) {
+      mutationObserve.observe(contentRef, {
+        attributes: true,
+        subtree: true,
+        childList: true,
       });
     }
+
+    return () => {
+      mutationObserve.disconnect();
+    };
+  }, [ids]);
+
+  useEffect(() => {
+    setSvgLines(ids);
   }, [svgRef.current, ids]);
 
   return (

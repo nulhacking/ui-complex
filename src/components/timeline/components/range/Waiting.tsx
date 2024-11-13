@@ -88,8 +88,8 @@ const Waiting = ({ ids, taskId }: IProps) => {
           });
           if (contentRef) {
             contentRef["dependence"] = {
-              fromId: taskId,
               type: "waiting",
+              toId: taskId,
               isLine: true,
             };
           }

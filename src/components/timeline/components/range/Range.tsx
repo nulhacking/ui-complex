@@ -180,7 +180,7 @@ const Range = ({
               gridColumnEnd: dueDate + 1,
               opacity: isDrag ? 0.5 : 1,
             }}
-            task-id={holder?.id}
+            task-id={props?.id}
             onMouseUp={() => {
               if (
                 contentRef &&
@@ -189,7 +189,9 @@ const Range = ({
               ) {
                 onDependenceEnd({
                   ...contentRef.dependence,
-                  toId: holder?.id,
+                  ...(contentRef.dependence?.type === "waiting"
+                    ? { fromId: props?.id }
+                    : { toId: props?.id }),
                 });
               }
             }}
@@ -202,7 +204,7 @@ const Range = ({
                   className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-left`}
                   onMouseDown={onMouseDownLeft}
                 ></div>
-                <Waiting ids={waitings || []} taskId={holder?.id} />
+                <Waiting ids={waitings || []} taskId={props?.id} />
               </>
             )}
 
@@ -222,7 +224,7 @@ const Range = ({
                   className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-right`}
                   onMouseDown={onMouseDownRight}
                 ></div>
-                <Blocking ids={blockings || []} taskId={holder?.id} />
+                <Blocking ids={blockings || []} taskId={props?.id} />
               </>
             )}
           </div>
