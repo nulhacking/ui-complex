@@ -1,15 +1,21 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  cloneElement,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import LinkIcon from "../../../../assets/icons/LinkIcon";
 import { getTimelineScroll } from "../../utils/helpers/timelineOnScroll";
-import { TimelineContext } from "../../hooks/TimelineContext";
+import { ITimelineContext, TimelineContext } from "../../hooks/TimelineContext";
 
 interface IProps {
-  ids: string[];
   taskId: string;
   fromRef: React.MutableRefObject<HTMLDivElement | null>;
+  blocking?: ITimelineContext.DependenceProps;
 }
 
-const Blocking = ({ ids, taskId, fromRef }: IProps) => {
+const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
   const [svgPosition, setSvgPosition] = useState({
     width: 0,
     height: 0,
@@ -183,7 +189,7 @@ const Blocking = ({ ids, taskId, fromRef }: IProps) => {
 
   useEffect(() => {
     const mutationObserve = new MutationObserver((elements) => {
-      setSvgLines(ids);
+      setSvgLines(blocking?.ids || []);
     });
 
     if (contentRef) {
@@ -197,11 +203,57 @@ const Blocking = ({ ids, taskId, fromRef }: IProps) => {
     return () => {
       mutationObserve.disconnect();
     };
-  }, [ids]);
+  }, [blocking?.ids]);
 
   useEffect(() => {
-    setSvgLines(ids);
-  }, [svgRef.current, ids]);
+    setSvgLines(blocking?.ids || []);
+  }, [svgRef.current, blocking?.ids]);
+
+  const MouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    setLinePosition({
+      ...linePosition,
+      isLine: true,
+      clientX: e.clientX + containerLeft(),
+      clientY: e.clientY + containerTop(),
+      x: 0,
+      y: 0,
+    });
+    if (contentRef) {
+      contentRef["dependence"] = {
+        fromId: taskId,
+        type: "blocking",
+        isLine: true,
+      };
+    }
+  };
+
+  const LinkElmn = (
+    <div
+      className="uic-timeline-body-range-blocking"
+      onMouseDown={MouseDown}
+      style={{
+        opacity:
+          (blocking?.ids || [])?.length > 0 || linePosition?.isLine ? 1 : "",
+        left:
+          (blocking?.ids || [])?.length > 0 || linePosition?.isLine
+            ? "calc(100% - 10px)"
+            : "",
+      }}
+    >
+      <LinkIcon />
+    </div>
+  );
+
+  const renderElement = () =>
+    blocking?.render ? (
+      blocking?.render({
+        elm: LinkElmn,
+        visible: (blocking?.ids || [])?.length > 0 || linePosition?.isLine,
+      })
+    ) : (
+      <></>
+    );
 
   return (
     <>
@@ -226,34 +278,26 @@ const Blocking = ({ ids, taskId, fromRef }: IProps) => {
           <path key={index} d={path} />
         ))}
       </svg>
-      <div
-        className="uic-timeline-body-range-blocking"
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          setLinePosition({
-            ...linePosition,
-            isLine: true,
-            clientX: e.clientX + containerLeft(),
-            clientY: e.clientY + containerTop(),
-            x: 0,
-            y: 0,
-          });
-          if (contentRef) {
-            contentRef["dependence"] = {
-              fromId: taskId,
-              type: "blocking",
-              isLine: true,
-            };
-          }
-        }}
-        style={{
-          opacity: ids?.length > 0 || linePosition?.isLine ? 1 : "",
-          left:
-            ids?.length > 0 || linePosition?.isLine ? "calc(100% - 10px)" : "",
-        }}
-      >
-        <LinkIcon />
-      </div>
+      {blocking?.render
+        ? cloneElement(renderElement(), {
+            onMouseDown: MouseDown,
+            className: `uic-timeline-body-range-blocking ${
+              renderElement()?.props?.className || ""
+            }`,
+            style: {
+              opacity:
+                (blocking?.ids || [])?.length > 0 || linePosition?.isLine
+                  ? 1
+                  : "",
+              left:
+                (blocking?.ids || [])?.length > 0 || linePosition?.isLine
+                  ? "calc(100% - 10px)"
+                  : "",
+              ...renderElement()?.props?.style,
+            },
+            ...renderElement()?.props,
+          })
+        : LinkElmn}
     </>
   );
 };

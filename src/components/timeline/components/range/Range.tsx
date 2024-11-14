@@ -23,8 +23,8 @@ interface IProps extends ITimelineDataChildren {
   onDragEnd?: (range: IRange) => void;
   onDependenceEnd?: (dependence: ITimelineContext.Dependence) => void;
   disabled?: boolean;
-  blockings?: string[];
-  waitings?: string[];
+  blocking?: ITimelineContext.DependenceProps;
+  waiting?: ITimelineContext.DependenceProps;
 }
 
 const Range = ({
@@ -34,8 +34,8 @@ const Range = ({
   children,
   customeStyle = false,
   disabled = false,
-  blockings,
-  waitings,
+  blocking,
+  waiting,
   ...props
 }: IProps) => {
   const { dateFormatTodates, holderWidth, contentRef, randomId, dependencies } =
@@ -187,12 +187,15 @@ const Range = ({
                 contentRef.dependence?.isLine &&
                 onDependenceEnd
               ) {
-                onDependenceEnd({
+                const dependence = {
                   ...contentRef.dependence,
                   ...(contentRef.dependence?.type === "waiting"
                     ? { fromId: props?.id }
                     : { toId: props?.id }),
-                });
+                };
+                if (dependence?.fromId !== dependence?.toId) {
+                  onDependenceEnd(dependence);
+                }
               }
             }}
             ref={rangeRef}
@@ -204,7 +207,7 @@ const Range = ({
                   className={`uic-timeline-body-range-resize uic-timeline-body-range-resize-left`}
                   onMouseDown={onMouseDownLeft}
                 ></div>
-                <Waiting ids={waitings || []} taskId={props?.id} />
+                <Waiting waiting={waiting} taskId={props?.id} />
               </>
             )}
 
@@ -225,7 +228,7 @@ const Range = ({
                   onMouseDown={onMouseDownRight}
                 ></div>
                 <Blocking
-                  ids={blockings || []}
+                  blocking={blocking}
                   taskId={props?.id}
                   fromRef={rangeRef}
                 />

@@ -97,8 +97,14 @@ const App = () => {
                     {...holder}
                     key={holder?.id}
                     holder={{ id: holder?.id }}
-                    blockings={holder?.blockings}
-                    waitings={holder?.waitings}
+                    blocking={{
+                      ids: holder?.blockings,
+                      render: ({ elm }) => elm,
+                    }}
+                    waiting={{
+                      ids: holder?.waitings,
+                      render: ({ elm }) => elm,
+                    }}
                     onDependenceEnd={(value) => {
                       console.log(value);
                     }}

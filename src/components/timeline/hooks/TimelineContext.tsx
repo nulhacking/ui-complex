@@ -13,6 +13,13 @@ export namespace ITimelineContext {
     toId?: string;
     isLine?: boolean;
   }
+  export interface DependenceProps {
+    ids?: string[];
+    render?: (props: {
+      elm: React.ReactElement;
+      visible: boolean;
+    }) => React.ReactElement;
+  }
   export interface IState {
     contentRef: (HTMLDivElement & { dependence: Dependence }) | null;
     bodyRef: HTMLDivElement | null;

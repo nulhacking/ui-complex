@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { cloneElement, useContext, useEffect, useState } from "react";
 import LinkIcon from "../../../../assets/icons/LinkIcon";
-import { TimelineContext } from "../../hooks/TimelineContext";
+import { ITimelineContext, TimelineContext } from "../../hooks/TimelineContext";
 import { getTimelineScroll } from "../../utils/helpers/timelineOnScroll";
 
 interface IProps {
-  ids: string[];
   taskId: string;
+  waiting?: ITimelineContext.DependenceProps;
 }
 
-const Waiting = ({ ids, taskId }: IProps) => {
+const Waiting = ({ waiting, taskId }: IProps) => {
   const { contentRef, randomId } = useContext(TimelineContext);
 
   const [linePosition, setLinePosition] = useState({
@@ -65,6 +65,52 @@ const Waiting = ({ ids, taskId }: IProps) => {
     };
   }, [linePosition.isLine]);
 
+  const MouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.stopPropagation();
+    setLinePosition({
+      ...linePosition,
+      isLine: true,
+      clientX: e.clientX + containerLeft(),
+      clientY: e.clientY + containerTop(),
+      x: 0,
+      y: 0,
+    });
+    if (contentRef) {
+      contentRef["dependence"] = {
+        type: "waiting",
+        toId: taskId,
+        isLine: true,
+      };
+    }
+  };
+
+  const LinkElmn = (
+    <div
+      className="uic-timeline-body-range-waiting"
+      onMouseDown={MouseDown}
+      style={{
+        opacity:
+          (waiting?.ids || [])?.length > 0 || linePosition?.isLine ? 1 : "",
+        right:
+          (waiting?.ids || [])?.length > 0 || linePosition?.isLine
+            ? "calc(100% - 10px)"
+            : "",
+      }}
+    >
+      <LinkIcon />
+    </div>
+  );
+
+  const renderElement = () =>
+    waiting?.render ? (
+      waiting?.render({
+        elm: LinkElmn,
+        visible: (waiting?.ids || [])?.length > 0 || linePosition?.isLine,
+      })
+    ) : (
+      <></>
+    );
+
   return (
     <>
       <div
@@ -74,34 +120,26 @@ const Waiting = ({ ids, taskId }: IProps) => {
           transform: `rotate(${linePosition.angle}rad)`,
         }}
       />
-      <div
-        className="uic-timeline-body-range-waiting"
-        onMouseDown={(e) => {
-          e.stopPropagation();
-          setLinePosition({
-            ...linePosition,
-            isLine: true,
-            clientX: e.clientX + containerLeft(),
-            clientY: e.clientY + containerTop(),
-            x: 0,
-            y: 0,
-          });
-          if (contentRef) {
-            contentRef["dependence"] = {
-              type: "waiting",
-              toId: taskId,
-              isLine: true,
-            };
-          }
-        }}
-        style={{
-          opacity: ids?.length > 0 || linePosition?.isLine ? 1 : "",
-          right:
-            ids?.length > 0 || linePosition?.isLine ? "calc(100% - 10px)" : "",
-        }}
-      >
-        <LinkIcon />
-      </div>
+      {waiting?.render
+        ? cloneElement(renderElement(), {
+            onMouseDown: MouseDown,
+            className: `uic-timeline-body-range-waiting ${
+              renderElement()?.props?.className || ""
+            }`,
+            style: {
+              opacity:
+                (waiting?.ids || [])?.length > 0 || linePosition?.isLine
+                  ? 1
+                  : "",
+              right:
+                (waiting?.ids || [])?.length > 0 || linePosition?.isLine
+                  ? "calc(100% - 10px)"
+                  : "",
+              ...renderElement()?.props?.style,
+            },
+            ...renderElement()?.props,
+          })
+        : LinkElmn}
     </>
   );
 };
