@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { Timeline } from "./components/timeline";
 const { Holder, OutsideDraggable } = Timeline;
 import "./global.scss";
+import { DropDown } from "./components/dropdown";
 
 const dataDefault = Array.from({ length: 10 }).map((_, i) => ({
   name: `MRX ${i}`,
@@ -99,11 +100,11 @@ const App = () => {
                     holder={{ id: holder?.id }}
                     blocking={{
                       ids: holder?.blockings,
-                      render: ({ elm }) => elm,
+                      // render: ({ elm }) => elm,
                     }}
                     waiting={{
                       ids: holder?.waitings,
-                      render: ({ elm }) => elm,
+                      // render: ({ elm }) => elm,
                     }}
                     onDependenceEnd={(value) => {
                       console.log(value);

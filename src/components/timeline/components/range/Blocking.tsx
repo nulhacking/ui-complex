@@ -28,6 +28,8 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     useContext(TimelineContext);
   const { dayWidth } = dateFormatTodates;
 
+  // const contentRef = document.getElementById(randomId);
+
   const [linePosition, setLinePosition] = useState({
     isLine: false,
     startWidth: 0,
@@ -153,10 +155,10 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
 
   useEffect(() => {
     const windowMouseMove = (e: MouseEvent) => {
+      // console.log(contentRef);
       if (linePosition.isLine) {
         const a = e.clientX + containerLeft() - linePosition.clientX;
         const h = e.clientY + containerTop() - linePosition.clientY;
-
         const angle = Math.atan2(-h, -a);
         setLinePosition((prev) => ({
           ...prev,
@@ -189,7 +191,24 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
 
   useEffect(() => {
     const mutationObserve = new MutationObserver((elements) => {
-      setSvgLines(blocking?.ids || []);
+      const observeIds = elements?.reduce<string[]>((p, c) => {
+        const id = (c?.target as HTMLElement)?.getAttribute("task-id");
+
+        c?.addedNodes?.forEach((added) => {
+          const id = (added as HTMLElement)?.getAttribute("task-id");
+          if (id) {
+            p.push(id);
+          }
+        });
+
+        if (id) {
+          p.push(id);
+        }
+        return p;
+      }, []);
+      if (observeIds?.length > 0) {
+        setSvgLines(blocking?.ids || []);
+      }
     });
 
     if (contentRef) {
@@ -203,7 +222,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     return () => {
       mutationObserve.disconnect();
     };
-  }, [blocking?.ids]);
+  }, [blocking?.ids, linePosition?.isLine]);
 
   useEffect(() => {
     setSvgLines(blocking?.ids || []);
