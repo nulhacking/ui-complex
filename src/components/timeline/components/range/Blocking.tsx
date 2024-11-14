@@ -61,7 +61,6 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
         dayWidth;
 
       const fromPosition = fromTask?.getBoundingClientRect();
-      const fromLeft = fromStart || 0;
 
       let maxLeft = fromStart;
       let maxRight = fromEnd;
@@ -119,8 +118,8 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
             const toStart =
               Number(toTask.style.gridColumnStart) * dayWidth + 20;
             const startX =
-              (fromStart > toStart ? fromLeft - toStart : 0) +
-              (fromEnd - fromStart) +
+              (maxLeft > toStart ? maxLeft - toStart : 0) +
+              (fromEnd - maxLeft) +
               40;
             const startY = fromPosition?.top! + containerTop() - maxTop + 20;
             const endX = toStart - maxLeft + 20;
@@ -193,6 +192,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     const mutationObserve = new MutationObserver((elements) => {
       const observeIds = elements?.reduce<string[]>((p, c) => {
         const id = (c?.target as HTMLElement)?.getAttribute("task-id");
+        const nextId = (c?.nextSibling as HTMLElement)?.getAttribute("task-id");
 
         c?.addedNodes?.forEach((added) => {
           const id = (added as HTMLElement)?.getAttribute("task-id");
@@ -201,6 +201,9 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
           }
         });
 
+        if (nextId) {
+          p.push(nextId);
+        }
         if (id) {
           p.push(id);
         }
