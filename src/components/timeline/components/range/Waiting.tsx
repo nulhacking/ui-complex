@@ -54,6 +54,9 @@ const Waiting = ({ waiting, taskId }: IProps) => {
           x: 0,
           y: 0,
         }));
+        if (contentRef) {
+          contentRef["dependence"] = undefined;
+        }
       }
     };
 

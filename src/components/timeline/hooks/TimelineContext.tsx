@@ -21,7 +21,7 @@ export namespace ITimelineContext {
     }) => React.ReactElement;
   }
   export interface IState {
-    contentRef: (HTMLDivElement & { dependence: Dependence }) | null;
+    contentRef: (HTMLDivElement & { dependence?: Dependence }) | null;
     bodyRef: HTMLDivElement | null;
     randomId: string;
     dateFormatTodates: DateFormatToDate;

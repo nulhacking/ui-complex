@@ -177,6 +177,9 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
           x: 0,
           y: 0,
         }));
+        if (contentRef) {
+          contentRef["dependence"] = undefined;
+        }
       }
     };
 
