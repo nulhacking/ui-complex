@@ -17,8 +17,12 @@ export namespace ITimelineContext {
     ids?: string[];
     render?: (props: {
       elm: React.ReactElement;
-      visible: boolean;
+      isVisible: boolean;
     }) => React.ReactElement;
+    visible?: boolean;
+    line?: {
+      visible: boolean;
+    };
   }
   export interface IState {
     contentRef: (HTMLDivElement & { dependence?: Dependence }) | null;

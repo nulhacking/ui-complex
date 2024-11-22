@@ -217,7 +217,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
       }
     });
 
-    if (contentRef) {
+    if (contentRef && blocking?.line?.visible !== false) {
       mutationObserve.observe(contentRef, {
         attributes: true,
         subtree: true,
@@ -228,7 +228,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     return () => {
       mutationObserve.disconnect();
     };
-  }, [blocking?.ids, linePosition?.isLine]);
+  }, [blocking?.ids, linePosition?.isLine, blocking?.line]);
 
   useEffect(() => {
     setSvgLines(blocking?.ids || []);
@@ -274,7 +274,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     blocking?.render ? (
       blocking?.render({
         elm: LinkElmn,
-        visible: (blocking?.ids || [])?.length > 0 || linePosition?.isLine,
+        isVisible: (blocking?.ids || [])?.length > 0 || linePosition?.isLine,
       })
     ) : (
       <></>
@@ -289,20 +289,22 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
           transform: `rotate(${linePosition.angle}rad)`,
         }}
       />
-      <svg
-        ref={svgRef}
-        width={svgPosition.width}
-        height={svgPosition.height}
-        style={{
-          right: -svgPosition?.right,
-          top: -svgPosition?.top,
-        }}
-        className="uic-timeline-body-range-line-svg"
-      >
-        {svgPosition.paths.map((path, index) => (
-          <path key={index} d={path} />
-        ))}
-      </svg>
+      {blocking?.line?.visible !== false ? (
+        <svg
+          ref={svgRef}
+          width={svgPosition.width}
+          height={svgPosition.height}
+          style={{
+            right: -svgPosition?.right,
+            top: -svgPosition?.top,
+          }}
+          className="uic-timeline-body-range-line-svg"
+        >
+          {svgPosition.paths.map((path, index) => (
+            <path key={index} d={path} />
+          ))}
+        </svg>
+      ) : null}
       {blocking?.render
         ? cloneElement(renderElement(), {
             onMouseDown: MouseDown,

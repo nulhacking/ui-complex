@@ -108,7 +108,7 @@ const Waiting = ({ waiting, taskId }: IProps) => {
     waiting?.render ? (
       waiting?.render({
         elm: LinkElmn,
-        visible: (waiting?.ids || [])?.length > 0 || linePosition?.isLine,
+        isVisible: (waiting?.ids || [])?.length > 0 || linePosition?.isLine,
       })
     ) : (
       <></>

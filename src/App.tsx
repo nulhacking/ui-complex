@@ -100,6 +100,7 @@ const App = () => {
                     holder={{ id: holder?.id }}
                     blocking={{
                       ids: holder?.blockings,
+                      line: { visible: false },
                       // render: ({ elm }) => elm,
                     }}
                     waiting={{
