@@ -87,20 +87,19 @@ const Waiting = ({ waiting, taskId }: IProps) => {
     }
   };
 
+  const isDep = (waiting?.ids || [])?.length > 0 || linePosition?.isLine;
+
   const LinkElmn = (
     <div
       className="uic-timeline-body-range-waiting"
       onMouseDown={MouseDown}
       style={{
-        opacity:
-          (waiting?.ids || [])?.length > 0 || linePosition?.isLine ? 1 : "",
-        right:
-          (waiting?.ids || [])?.length > 0 || linePosition?.isLine
-            ? "calc(100% - 10px)"
-            : "",
+        opacity: isDep ? 1 : "",
+        right: isDep ? "calc(100% - 10px)" : "",
+        background: waiting?.icon?.background,
       }}
     >
-      <LinkIcon />
+      <LinkIcon pathProps={{ stroke: waiting?.icon?.color }} />
     </div>
   );
 
@@ -108,7 +107,7 @@ const Waiting = ({ waiting, taskId }: IProps) => {
     waiting?.render ? (
       waiting?.render({
         elm: LinkElmn,
-        isVisible: (waiting?.ids || [])?.length > 0 || linePosition?.isLine,
+        isVisible: isDep,
       })
     ) : (
       <></>

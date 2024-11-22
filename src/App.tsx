@@ -100,11 +100,12 @@ const App = () => {
                     holder={{ id: holder?.id }}
                     blocking={{
                       ids: holder?.blockings,
-                      line: { visible: false },
+                      // line: { visible: false },
                       // render: ({ elm }) => elm,
                     }}
                     waiting={{
                       ids: holder?.waitings,
+                      icon: { background: "red" },
                       // render: ({ elm }) => elm,
                     }}
                     onDependenceEnd={(value) => {

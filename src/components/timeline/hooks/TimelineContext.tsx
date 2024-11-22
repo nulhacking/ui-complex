@@ -21,7 +21,12 @@ export namespace ITimelineContext {
     }) => React.ReactElement;
     visible?: boolean;
     line?: {
-      visible: boolean;
+      visible?: boolean;
+      color?: string;
+    };
+    icon?: {
+      background?: string;
+      color?: string;
     };
   }
   export interface IState {

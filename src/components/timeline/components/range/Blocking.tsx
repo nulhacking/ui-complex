@@ -253,20 +253,19 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     }
   };
 
+  const isDep = (blocking?.ids || [])?.length > 0 || linePosition?.isLine;
+
   const LinkElmn = (
     <div
       className="uic-timeline-body-range-blocking"
       onMouseDown={MouseDown}
       style={{
-        opacity:
-          (blocking?.ids || [])?.length > 0 || linePosition?.isLine ? 1 : "",
-        left:
-          (blocking?.ids || [])?.length > 0 || linePosition?.isLine
-            ? "calc(100% - 10px)"
-            : "",
+        opacity: isDep ? 1 : "",
+        left: isDep ? "calc(100% - 10px)" : "",
+        background: blocking?.icon?.background,
       }}
     >
-      <LinkIcon />
+      <LinkIcon pathProps={{ stroke: blocking?.icon?.color }} />
     </div>
   );
 
@@ -274,7 +273,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     blocking?.render ? (
       blocking?.render({
         elm: LinkElmn,
-        isVisible: (blocking?.ids || [])?.length > 0 || linePosition?.isLine,
+        isVisible: isDep,
       })
     ) : (
       <></>
@@ -301,7 +300,11 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
           className="uic-timeline-body-range-line-svg"
         >
           {svgPosition.paths.map((path, index) => (
-            <path key={index} d={path} />
+            <path
+              key={index}
+              d={path}
+              stroke={blocking?.line?.color || "#758195"}
+            />
           ))}
         </svg>
       ) : null}
