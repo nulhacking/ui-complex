@@ -14,7 +14,10 @@ export namespace ITimelineContext {
     isLine?: boolean;
   }
   export interface DependenceProps {
-    ids?: string[];
+    ids?: {
+      id: string;
+      color?: string;
+    }[];
     render?: (props: {
       elm: React.ReactElement;
       isVisible: boolean;

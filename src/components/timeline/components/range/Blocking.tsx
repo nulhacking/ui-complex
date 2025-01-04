@@ -21,7 +21,7 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     height: 0,
     right: 0,
     top: 0,
-    paths: [] as string[],
+    paths: [] as { path: string; stroke?: string }[],
   });
   const svgRef = useRef<SVGSVGElement | null>(null);
   const { contentRef, randomId, dateFormatTodates } =
@@ -48,8 +48,8 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
     -(contentRef?.getBoundingClientRect()?.left || 0) +
     getTimelineScroll(randomId).x;
 
-  const setSvgLines = (ids: string[]) => {
-    if (ids.length > 0) {
+  const setSvgLines = (ids: ITimelineContext.DependenceProps["ids"]) => {
+    if (ids && ids?.length > 0) {
       const fromTask = fromRef?.current;
 
       const fromStart =
@@ -69,9 +69,13 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
       let right = 20;
       let top = 0;
 
-      let paths: string[] = [];
+      let paths: {
+        path: string;
+        stroke?: string;
+      }[] = [];
 
-      ids?.forEach((id) => {
+      ids?.forEach((item) => {
+        const { id } = item;
         const taks = contentRef?.querySelectorAll<HTMLDivElement>(
           `[task-id='${id}']`
         );
@@ -107,7 +111,8 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
         });
       });
 
-      ids?.forEach((id) => {
+      ids?.forEach((item) => {
+        const { id } = item;
         const taks = contentRef?.querySelectorAll<HTMLDivElement>(
           `[task-id='${id}']`
         );
@@ -129,7 +134,10 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
               startX + controlOffset
             } ${startY}, ${endX - controlOffset} ${endY}, ${endX} ${endY}`;
 
-            paths.push(d);
+            paths.push({
+              path: d,
+              stroke: item?.color,
+            });
           }
         });
       });
@@ -302,8 +310,8 @@ const Blocking = ({ taskId, fromRef, blocking }: IProps) => {
           {svgPosition.paths.map((path, index) => (
             <path
               key={index}
-              d={path}
-              stroke={blocking?.line?.color || "#758195"}
+              d={path?.path}
+              stroke={path?.stroke || blocking?.line?.color || "#758195"}
             />
           ))}
         </svg>

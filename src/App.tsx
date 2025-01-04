@@ -17,21 +17,42 @@ const dataDefault = Array.from({ length: 10 }).map((_, i) => ({
       id: `${i} 2`,
       startDate: "23.09.2024",
       dueDate: "23.09.2024",
-      blockings: i === 2 ? ["0 4"] : [],
-      waitings: i === 2 ? ["0 4"] : [],
+      blockings:
+        i === 2
+          ? [
+              {
+                id: "0 4",
+              },
+            ]
+          : [],
+      waitings:
+        i === 2
+          ? [
+              {
+                id: "0 4",
+              },
+            ]
+          : [],
     },
     {
       id: `${i} 3`,
       startDate: "23.09.2024",
       dueDate: "24.09.2024",
-      waitings: i === 2 ? ["0 4"] : [],
+      waitings:
+        i === 2
+          ? [
+              {
+                id: "0 4",
+              },
+            ]
+          : [],
     },
     {
       id: `${i} 4`,
       startDate: "24.09.2024",
       dueDate: "25.09.2024",
-      blockings: i === 0 ? ["2 2", "2 3"] : [],
-      waitings: i === 0 ? ["2 2"] : [],
+      blockings: i === 0 ? [{ id: "2 2" }, { id: "2 3", color: "red" }] : [],
+      waitings: i === 0 ? [{ id: "2 2" }] : [],
     },
   ],
 }));
