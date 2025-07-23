@@ -41,9 +41,13 @@ export namespace ITimelineContext {
     dateType: DateType;
     dayWidthSize: Record<DateType, number>;
     header?: ITimelineContext.IHeader;
+    topBar?: ITimelineContext.ITopBar;
     dependencies: boolean;
   }
   export interface IHeader {
+    extra: () => ReactNode;
+  }
+  export interface ITopBar {
     extra: () => ReactNode;
   }
 }

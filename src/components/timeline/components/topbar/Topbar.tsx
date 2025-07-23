@@ -2,13 +2,15 @@ import { useContext } from "react";
 import { TimelineContext } from "../../hooks/TimelineContext";
 
 const Topbar = () => {
-  const { dateFormatTodates, holderWidth } = useContext(TimelineContext);
+  const { dateFormatTodates, holderWidth, topBar } = useContext(TimelineContext);
   return (
     <div className="uic-timeline-body-row-topbar">
       <div
         className="uic-timeline-body-row-topbar-holder"
         style={{ width: holderWidth }}
-      ></div>
+      >
+        {topBar?.extra && topBar.extra()}
+      </div>
       {dateFormatTodates?.data?.map((item) => (
         <div
           className="uic-timeline-body-date-title"
