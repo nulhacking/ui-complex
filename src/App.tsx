@@ -99,6 +99,9 @@ const App = () => {
         header={{
           extra: () => "sdfsfsdf",
         }}
+        topBar={{
+          extra: () => <div>salom</div>,
+        }}
         size={JSON.parse(localStorage.getItem("size") || "{}")}
         onResize={({ size }) => {
           localStorage.setItem("size", JSON.stringify(size));

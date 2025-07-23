@@ -27,6 +27,7 @@ interface IProps {
   onResize?: (props: { size: Partial<Record<DateType, number>> }) => void;
   startDate?: dayjs.Dayjs;
   dependencies?: boolean;
+  topBar?: ITimelineContext.ITopBar;
 }
 
 const Timeline: {
@@ -41,6 +42,7 @@ const Timeline: {
   header,
   size = timelineDefaultState.dayWidthSize,
   dependencies = false,
+  topBar,
   onResize,
 }) => {
   const [randomId, _] = useState(timelineDefaultState.randomId);
@@ -92,6 +94,7 @@ const Timeline: {
           dayWidthSize,
           header,
           dependencies,
+          topBar,
           setDateType,
           onDragEnd,
           setDayWidthSize,
